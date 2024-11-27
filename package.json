@@ -1,0 +1,14 @@
+{
+  "name": "reqruitment-server",
+  "version": "1.0.0",
+  "description": "웹 크롤링을 이용한 구인구직 백엔드 서버 입니다.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
