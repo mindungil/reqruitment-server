@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
-
+import os
 
 def crawl_saramin(keyword, pages=1, max_retries=3):
     """
@@ -103,4 +103,4 @@ if __name__ == "__main__":
     df = crawl_saramin('채용 모집', pages=5)
 
     print(df)
-    df.to_csv('./saramin_crawling.csv', index=False)
+    df.to_csv(os.path.join(os.getcwd() + "\crawler", 'saramin_crawling.csv'), index=False)
