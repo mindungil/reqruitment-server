@@ -103,4 +103,4 @@ if __name__ == "__main__":
     df = crawl_saramin('채용 모집', pages=5)
 
     print(df)
-    df.to_csv(os.path.join(os.getcwd() + "\crawler", 'saramin_crawling.csv'), index=False)
+    df.to_csv(os.path.join(os.getcwd(), "crawler", "crawlingData", 'saraminCrawling.csv'), index=False)
