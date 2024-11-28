@@ -17,8 +17,8 @@ def extract_register_date(data):
 
 # "외"를 제거하는 함수
 def extract_data(data):
-    if ", 외 " in data:
-        return data.split(", 외 ")[0].strip()
+    if ", 외" in data:
+        return data
     if " 외" in data:
         return data.split(" 외")[0].strip()
     
