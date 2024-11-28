@@ -1,9 +1,17 @@
 import csv
 import os
+import pandas as pd
 
 # 입력 파일과 출력 파일 경로 설정
-input_file = os.path.join(os.getcwd() + "\crawler", 'saramin_crawling.csv')  # 입력 파일 이름
-output_file = os.path.join(os.getcwd() + "\crawler", 'jobData.csv')
+input_file = os.path.join(os.getcwd(), "crawler", "saramin_crawling.csv")  # 입력 파일 이름
+output_file = os.path.join(os.getcwd(), "crawler", "jobData.csv")
+
+# pandas를 이용해 중복 제거
+df = pd.read_csv(input_file, encoding="utf-8")  # 입력 파일 읽기
+df = df.drop_duplicates(subset=["제목", "링크"], keep="first")  # 제목 또는 링크가 중복인 행 제거
+# 중복 제거된 데이터를 새로운 중간 파일로 저장
+intermediate_file = os.path.join(os.getcwd(), "crawler", "intermediate.csv")
+df.to_csv(intermediate_file, index=False, encoding="utf-8")  # 중복 제거된 파일 저장
 
 # "등록일"과 관련된 데이터를 떼어내는 함수
 def extract_register_date(data):
@@ -21,11 +29,10 @@ def extract_data(data):
         return data
     if " 외" in data:
         return data.split(" 외")[0].strip()
-    
     return data
 
-# CSV 읽기 및 수정
-with open(input_file, mode="r", encoding="utf-8") as infile, open(output_file, mode="w", encoding="utf-8", newline="") as outfile:
+# 중복 제거 후 파일을 다시 읽어와 CSV 수정 작업 수행
+with open(intermediate_file, mode="r", encoding="utf-8") as infile, open(output_file, mode="w", encoding="utf-8", newline="") as outfile:
     reader = csv.reader(infile)
     writer = csv.writer(outfile)
 
