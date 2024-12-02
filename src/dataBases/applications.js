@@ -17,6 +17,5 @@ const applicationSchema = new mongoose.Schema({
     지원공고: String,
     지원자: String,
     지원날짜: String,
-    
-});
 
+});
