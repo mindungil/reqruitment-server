@@ -1,3 +1,4 @@
+#-*- coding:utf-8 -*-
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -31,15 +32,43 @@ def crawl_saramin_company(keyword, pages=1, max_retries=3):
                 for company in company_listings:
                     try:
                         name = company.select_one('.title a').text.strip()
-                        recruiting = company.select_one('.title .link_employ').text.strip()
-                        information = company.select_one('.text_info').text.strip()
-                        detail = company.select_one('.title list').text.strip()
+                        
+                        jobRecruiting = company.select_one('.title .link_employ span')
+                        recruiting = jobRecruiting.text.strip() if jobRecruiting else '0'
+                        
+                        companyInformation = company.select('.text_info span')
+                        companyType = companyInformation[0].text.strip() if len(companyInformation) > 0 else ''
+                        companyInform = companyInformation[1].text.strip() if len(companyInformation) > 1 else ''
+                        companyDate = ''
+                        emploees = ''
+                        ceo = ''
+                        
+                        if "기업" in companyInform :
+                            companyDate = companyInformation[2].text.strip() if len(companyInformation) > 2 else ''
+                            emploees = companyInformation[3].text.strip() if len(companyInformation) > 3 else ''
+                            ceo = companyInformation[4].text.strip() if len(companyInformation) > 4 else ''
+                            
+                        else :
+                            companyDate = companyInform
+                            companyInform = ''
+                            emploees == companyInformation[2].text.strip() if len(companyInformation) > 2 else ''
+                            ceo = companyInformation[3].text.strip() if len(companyInformation) > 3 else ''
+                            
+                        detail = company.select('.detail_info .txt')
+                        companyDetail = ''
+                        for i in range(0, 5):  
+                            if i != 4: companyDetail += detail[i].text.strip() + ", " if len(detail) > i else ''
+                            else: companyDetail += detail[i].text.strip() if len(detail) > i else ''
+
                         
                         companys.append({
                             '회사명': name,
-                            '현재채용': recruiting,
-                            '기업정보': information,
-                            '세부정보': detail
+                            '채용중': recruiting,
+                            '기업규모': companyInform,
+                            '산업분야': companyType,
+                            '존속기간': companyDate,
+                            'CEO': ceo,
+                            '세부정보': companyDetail
                         })
                         
                     except AttributeError as e:
@@ -65,7 +94,8 @@ def crawl_saramin_company(keyword, pages=1, max_retries=3):
 # 사용 예시
 if __name__ == "__main__":
     # '채용 모집' 키워드로 4페이지 크롤링
-    df = crawl_saramin_company('주', pages=20)
+    pages = 20
+    df = crawl_saramin_company('주', pages)
 
-    print(df)
+    print(f"{pages}페이지 크롤링이 완료되었습니다. ")
     df.to_csv(os.path.join(os.getcwd(), "crawler","crawlingData", 'saraminCrawlingCompany.csv'), index=False)
