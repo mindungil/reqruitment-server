@@ -73,4 +73,4 @@ fs.createReadStream(filePath)
   .on('error', (error) => {
     console.error('CSV 파일 처리 중 에러 발생:', error);
     mongoose.disconnect();
-  });
+  }); 
