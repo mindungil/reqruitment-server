@@ -3,7 +3,7 @@ import fs from 'fs';
 import csv from 'csv-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { mongodb } from '../../config/mongodb.js';
+import { mongodb } from '../config/mongodb.js';
 
 const start = async ()=> {
   try{
@@ -38,7 +38,7 @@ const jobData = mongoose.model('job_data', jobDataSchema);
   // 파일 경로 설정
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const filePath = path.resolve(__dirname, '../../../crawler/crawlingData/jobData.csv');
+const filePath = path.resolve(__dirname, '../../crawler/crawlingData/jobData.csv');
  
 // 파일 존재 확인
 if (!fs.existsSync(filePath)) {
@@ -74,3 +74,5 @@ fs.createReadStream(filePath)
     console.error('CSV 파일 처리 중 에러 발생:', error);
     mongoose.disconnect();
   }); 
+
+module.exports = mongoose.model('jobDatas', jobDataSchema);
