@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const userSchema = new mongoose( {
+const userSchema = new mongoose.Schema( {
     이름: String,
     성별: String,
     나이: Number,
@@ -9,6 +9,6 @@ const userSchema = new mongoose( {
     비밀번호: String
 })
 
-userSchema.index({이메일: 1}, {unique: true});
+userSchema.index({이메일: 2}, {unique: true});
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);

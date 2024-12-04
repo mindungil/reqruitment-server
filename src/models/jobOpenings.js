@@ -75,4 +75,4 @@ fs.createReadStream(filePath)
     mongoose.disconnect();
   }); 
 
-module.exports = mongoose.model('JobData', jobDataSchema);
+  export default mongoose.model('JobData', jobDataSchema);

@@ -69,4 +69,4 @@ fs.createReadStream(filePath)
     mongoose.disconnect();
   });
 
-module.exports = mongoose.model('Company', companyData);
+  export default mongoose.model('Company', companySchema);

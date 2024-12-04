@@ -1,16 +1,14 @@
 // models/index.js
-import mongoose from 'mongoose';
-import User from './userModel';
-import Review from './reviewModel';
-import Favorite from './favoriteModel';
-import Application from './applicationModel';
-import JobData from './jobOpenings';
-import Company from './companys';
+import User from './userModel.js';
+import Review from './reviewModel.js';
+import Favorite from './favoriteModel.js';
+import Application from './applicationModel.js';
+import JobData from './jobOpenings.js';
+import Company from './companys.js';
 
 // 모든 모델을 하나의 객체로 내보내기
-module.exports = {
+export default{
   User,
-  Job,
   Application,
   Review,
   JobData,

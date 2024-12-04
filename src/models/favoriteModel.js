@@ -6,4 +6,4 @@ const favoriteSchema = new mongoose.Schema({
     등록날짜: String,
 });
 
-module.exports = mongoose.model('Favorite', favoriteSchema);
+export default mongoose.model('Favorite', favoriteSchema);

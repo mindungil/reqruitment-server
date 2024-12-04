@@ -8,4 +8,4 @@ const reviewSchema = new mongoose.Schema({
     등록날짜: String,
 });
 
-module.exports = mongoose.model('Review', reviewSchema);
+export default mongoose.model('Review', reviewSchema);

@@ -10,4 +10,6 @@ client.on('error', (err) => {
 });
 client.connect().then();
 
-export const redisCli = client.v4;
+const redisCli = client.v4;
+
+export default redisCli;
