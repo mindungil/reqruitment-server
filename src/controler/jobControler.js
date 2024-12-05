@@ -36,3 +36,30 @@ export const getJobs = async (req, res) => {
         });
     }
 };
+
+export const searchJobs = async (req, res) => {
+    try {
+        await mongodb();
+
+        const { keyword } = req.query;
+
+        const jobs = await JobData.find({
+            $or: [
+                { 제목: { $regex: keyword, $options: 'i' } }, // 제목에서 검색
+                { 회사명: { $regex: keyword, $options: 'i' } } // 회사명에서 검색
+            ],
+        }).sort({ 갱신날짜: -1 });
+
+        res.status(200).json({
+            success: true,
+            message: "채용 공고 검색 결과",
+            jobs,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "채용 공고 검색 중 오류 발생",
+            error: error.message,
+        });
+    }
+};
