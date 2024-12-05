@@ -18,8 +18,8 @@ authRouter.post('/access', makeAccessToken);
 
 authRouter.post('/refresh', makeRefreshToken);
 
-authRouter.get('/profile', userProfile);
+authRouter.get('/profile', checkToken, userProfile);
 
-authRouter.post('/resign', resign);
+authRouter.post('/resign', checkToken, resign);
 
 export default authRouter;
