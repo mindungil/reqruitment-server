@@ -13,7 +13,7 @@ const encryptPassword = (password) => {
 export const signup = async (req, res) => {
   try {
     await mongodb();
-    const { name, sex, age, history, email, password } = req.body;
+    const { name, sex, age, history, residence, email, password } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: '모든 필드를 입력해야 합니다.' });
@@ -79,9 +79,6 @@ export const signin = async (req, res) => {
   }
 };
 
-// 토큰 갱신
-
-
 // 로그아웃
 export const signout = async (req, res) => {
   try {
@@ -95,3 +92,34 @@ export const signout = async (req, res) => {
     res.status(500).json({ success: false, message: '서버 오류', error: err.message });
   }
 };
+
+// 회원 정보 수정 ---->>>>> 경력 및 거주지만 수정 가능하도록 설정.
+export const updateUser = async (req, res) => {
+  try {
+    await mongodb();
+
+    const { email, history, residence } = req.body;
+    const user = User.findOne({이메일: email});
+    
+    if(!user) {
+      res.status(403).json({
+        success: false,
+        message: '접근 오류'
+      });
+    };
+    
+    await User.updateOne({이메일: email}, {$set: {경력: history ,거주지: residence}});
+    console.log("user 정보가 업데이트 되었습니다. 유저 : ", user.이름);
+
+    res.status(200).json({
+      success: true,
+      message: '유저 업데이트 완료',
+      data: {
+        userName: user.이름
+      }
+    });
+  } catch(err){
+    console.error("유저 정보 업데이트 오류 : ", err);
+    throw err;
+  }
+}

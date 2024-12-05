@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema( {
     나이: Number,
     경력: String,
     이메일: String,
+    거주지: String,
     비밀번호: String
 })
 
