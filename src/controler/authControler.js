@@ -99,7 +99,7 @@ export const updateUser = async (req, res) => {
     await mongodb();
 
     const { email, history, residence } = req.body;
-    const user = User.findOne({이메일: email});
+    const user = await User.findOne({이메일: email});
     
     if(!user) {
       res.status(403).json({
@@ -115,7 +115,7 @@ export const updateUser = async (req, res) => {
       success: true,
       message: '유저 업데이트 완료',
       data: {
-        userName: user.이름
+        userName: {user: user.이름}
       }
     });
   } catch(err){

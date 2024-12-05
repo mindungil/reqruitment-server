@@ -21,7 +21,6 @@ app.get("/", (req, res) => {
 
 
 app.use("/auth", authRouter);
-app.use("/token", tokenRouter);
 
 app.listen(port, () => {
   console.log(`서버에 연결되었습니다. port: ${port} http://localhost:${port}/`);

@@ -1,16 +1,23 @@
 import jwt from 'jsonwebtoken'
-import { getAccessToken } from '../models/tokenModel';
 
-function checkToken (res, req, next) {
+export default function checkToken (req, res, next) {
     try {
-        const reqTokenTemp = req.get('Authorization');
-        const reqToken = reqTokenTemp.split(' ')[1];
+        const reqTokenTemp = req.get('authorization');
+        
+        if(!reqTokenTemp) {
+            res.status(403).json({
+                success: false,
+                message: '요청 토큰을 읽는 데 실패하였습니다.'
+            });
+        };
+
+        const reqToken = reqTokenTemp.split(' ')[1] || [];
 
         if (!reqToken) {
             return res.status(403).json({ success: false, message: 'access token이 필요합니다.'});
         }
 
-        const decode = jwt.verify(reqToken, process.env.JWT_ACCESS);
+        const decode = jwt.verify(reqToken, process.env.JWT_SECRET);
 
         console.log("요쳥 토큰 유효 확인 : ");
         next();
