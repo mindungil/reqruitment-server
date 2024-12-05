@@ -18,7 +18,7 @@ authRouter.post('/access', makeAccessToken);
 
 authRouter.post('/refresh', makeRefreshToken);
 
-authRouter.post('/profile', userProfile);
+authRouter.get('/profile', userProfile);
 
 authRouter.post('/resign', resign);
 
