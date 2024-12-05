@@ -7,7 +7,7 @@ export const storeRefreshToken = async (userEmail, refreshToken) => {
     console.log(`Refresh token stored for ${userEmail}`);
   } catch (error) {
     console.error('Error storing refresh token:', error.message);
-    throw new Error('Failed to store refresh token');
+    throw error('Failed to store refresh token');
   }
 };
 
@@ -19,7 +19,7 @@ export const getRefreshToken = async (userEmail) => {
     return token;
   } catch (error) {
     console.error('Error fetching refresh token:', error.message);
-    throw new Error('Failed to fetch refresh token');
+    throw error('Failed to fetch refresh token');
   }
 };
 
@@ -31,7 +31,7 @@ export const deleteRefreshToken = async (userEmail) => {
     console.log(`Refresh token deleted for ${userEmail}`);
   } catch (error) {
     console.error('Error deleting refresh token:', error.message);
-    throw new Error('Failed to delete refresh token');
+    throw error('Failed to delete refresh token');
   }
 };
 
@@ -47,7 +47,7 @@ export const clearAllTokens = async () => {
     }
   } catch (error) {
     console.error('Error clearing all tokens:', error.message);
-    throw new Error('Failed to clear all tokens');
+    throw error('Failed to clear all tokens');
   }
 };
 
@@ -57,7 +57,7 @@ export const storeAccessToken = async (userEmail, accessToken) => {
     console.log(`access Token stored for ${userEmail}`);
   } catch (error) {
     console.error('Error storing access token:', error.message);
-    throw new Error('Failed to store access token');
+    throw error('Failed to store access token');
   }
 };
 
@@ -68,7 +68,7 @@ export const getAccessToken = async (userEmail, accessToken) => {
     return token;
   } catch(err) {
     console.error('Error fetching acess token:', err.message);
-    throw new Error('Failed to fetch access token');
+    throw error('Failed to fetch access token');
   }
 };
 
@@ -79,6 +79,6 @@ export const deleteAccessToken = async (userEmail) => {
     console.log(`Access token deleted for ${userEmail}`);
   } catch (error) {
     console.error('Error deleting Access token:', error.message);
-    throw new Error('Failed to delete Access token');
+    throw error('Failed to delete Access token');
   }
 };

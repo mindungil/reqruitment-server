@@ -1,10 +1,8 @@
 import User from '../models/userModel.js';
-import jwt from 'jsonwebtoken';
 import crypto from 'crypto'; // Base64 암호화를 위한 모듈
-import { storeRefreshToken, getRefreshToken, deleteRefreshToken } from '../models/tokenModel.js';
+import { storeRefreshToken, deleteRefreshToken, storeAccessToken } from '../models/tokenModel.js';
 import { mongodb } from '../config/mongodb.js';
-import { generateAccessToken, getRefreshToken } from './tokenControler.js';
-import mongoose from 'mongoose';
+import { generateAccessToken, generateRefreshToken } from './tokenControler.js';
 
 // 비밀번호 암호화 함수 (Base64 Encoding)
 const encryptPassword = (password) => {
@@ -66,9 +64,10 @@ export const signin = async (req, res) => {
 
     // Refresh Token Redis에 저장
     await storeRefreshToken(email, refreshToken);
+    await storeAccessToken(email, accessToken);
 
-    res.set("AccessToken", accessToken); // 헤더로 클라이언트에 엑세스 토큰 보내주기
-    res.set("RefreshToken", refreshToken);
+    res.set('Authorization', `Bearer ${accessToken}`); // 헤더로 클라이언트에 엑세스 토큰 보내주기
+    res.set('X-Refresh-Token', `Bearer ${refreshToken}`);
 
     res.status(200).json({
       success: true,

@@ -1,7 +1,9 @@
 import express from 'express'
-import { makeAccessToken, makeRefreshToken } from '../../controler/tokenControler';
+import { makeAccessToken, makeRefreshToken } from '../../controler/tokenControler.js';
 
-const app = express.Router();
+const tokenRouter = express.Router();
 
-app.post('/access', makeAccessToken);
-app.post('/refresh', makeRefreshToken);
+tokenRouter.post('/access', makeAccessToken);
+tokenRouter.post('/refresh', makeRefreshToken);
+
+export default tokenRouter;
