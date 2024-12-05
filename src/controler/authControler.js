@@ -1,23 +1,14 @@
 import User from '../models/userModel.js';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto'; // Base64 암호화를 위한 모듈
-import { storeRefreshToken, getRefreshToken, deleteRefreshToken } from '../models/refreshTokenModel.js';
+import { storeRefreshToken, getRefreshToken, deleteRefreshToken } from '../models/tokenModel.js';
 import { mongodb } from '../config/mongodb.js';
+import { generateAccessToken, getRefreshToken } from './tokenControler.js';
 import mongoose from 'mongoose';
 
 // 비밀번호 암호화 함수 (Base64 Encoding)
 const encryptPassword = (password) => {
   return crypto.createHash('sha256').update(password).digest('base64');
-};
-
-// Access Token 생성 함수
-const generateAccessToken = (user) => {
-  return jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-};
-
-// Refresh Token 생성 함수
-const generateRefreshToken = (user) => {
-  return jwt.sign({ id: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '14d' });
 };
 
 // 회원 가입
@@ -70,11 +61,14 @@ export const signin = async (req, res) => {
       return res.status(400).json({ success: false, message: '아이디 혹은 비밀번호를 잘못 입력하였습니다 - 2.' });
     }
 
-    const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
+    const accessToken = generateAccessToken(refreshToken);
 
     // Refresh Token Redis에 저장
     await storeRefreshToken(email, refreshToken);
+
+    res.set("AccessToken", accessToken); // 헤더로 클라이언트에 엑세스 토큰 보내주기
+    res.set("RefreshToken", refreshToken);
 
     res.status(200).json({
       success: true,
@@ -87,45 +81,7 @@ export const signin = async (req, res) => {
 };
 
 // 토큰 갱신
-export const refreshToken = async (req, res) => {
-  try {
-    const { refreshToken } = req.body;
 
-    if (!refreshToken) {
-      return res.status(400).json({ success: false, message: 'Refresh Token이 필요합니다.' });
-    }
-
-    // Redis에서 Refresh Token 조회
-    const storedToken = await getRefreshToken(req.user.email);
-    if (refreshToken !== storedToken) {
-      return res.status(403).json({ success: false, message: '유효하지 않은 Refresh Token입니다.' });
-    }
-
-    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, async (err, user) => {
-      if (err) {
-        // 만료된 Refresh Token 처리
-        if (err.name === 'TokenExpiredError') {
-          const newAccessToken = generateAccessToken(req.user);
-          const newRefreshToken = generateRefreshToken(req.user);
-          await storeRefreshToken(req.user.email, newRefreshToken);
-
-          return res.status(200).json({
-            success: true,
-            message: '새로운 토큰이 발급되었습니다.',
-            data: { accessToken: newAccessToken, refreshToken: newRefreshToken },
-          });
-        }
-
-        return res.status(403).json({ success: false, message: 'Refresh Token이 유효하지 않습니다.' });
-      }
-
-      const newAccessToken = generateAccessToken(user);
-      res.status(200).json({ success: true, accessToken: newAccessToken });
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, message: '서버 오류', error: err.message });
-  }
-};
 
 // 로그아웃
 export const signout = async (req, res) => {

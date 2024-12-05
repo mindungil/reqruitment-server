@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import authRouter from "./routes/auth/authRouter.js";
+import tokenRouter from "./routes/auth/tokenRouter.js"
 import { mongodb } from "./config/mongodb.js";
 
 dotenv.config(); 
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/token", tokenRouter);
 
 app.listen(port, () => {
   console.log(`서버에 연결되었습니다. port: ${port} http://localhost:${port}/`);

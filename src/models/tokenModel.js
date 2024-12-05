@@ -50,3 +50,35 @@ export const clearAllTokens = async () => {
     throw new Error('Failed to clear all tokens');
   }
 };
+
+export const storeAccessToken = async (userEmail, accessToken) => {
+  try {
+    await redisCli.setEx(`accessToken:${userEmail}`, 3600, accessToken);
+    console.log(`access Token stored for ${userEmail}`);
+  } catch (error) {
+    console.error('Error storing access token:', error.message);
+    throw new Error('Failed to store access token');
+  }
+};
+
+export const getAccessToken = async (userEmail, accessToken) => {
+  try {
+    const token = await redisCli.get(`accessToken:${userEmail}`);
+    if(!token) throw new Error('Token not found');
+    return token;
+  } catch(err) {
+    console.error('Error fetching acess token:', err.message);
+    throw new Error('Failed to fetch access token');
+  }
+};
+
+export const deleteAccessToken = async (userEmail) => {
+  try {
+    const result = await redisCli.del(`accessToken:${userEmail}`);
+    if (result === 0) throw new Error('Token not found or already deleted');
+    console.log(`Access token deleted for ${userEmail}`);
+  } catch (error) {
+    console.error('Error deleting Access token:', error.message);
+    throw new Error('Failed to delete Access token');
+  }
+};
