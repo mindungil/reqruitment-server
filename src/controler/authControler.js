@@ -5,7 +5,7 @@ import { mongodb } from '../config/mongodb.js';
 import { generateAccessToken, generateRefreshToken } from './tokenControler.js';
 
 // 비밀번호 암호화 함수 (Base64 Encoding)
-const encryptPassword = (password) => {
+export const encryptPassword = (password) => {
   return crypto.createHash('sha256').update(password).digest('base64');
 };
 

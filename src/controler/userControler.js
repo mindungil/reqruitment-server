@@ -1,5 +1,6 @@
-import { mongodb } from "../config/mongodb";
-import User from "../models/userModel";
+import { mongodb } from "../config/mongodb.js";
+import User from "../models/userModel.js";
+import { encryptPassword } from "./authControler.js";
 
 export const userProfile = async (req, res) => {
     try {
@@ -7,9 +8,10 @@ export const userProfile = async (req, res) => {
 
         const findEmail = req.body.email;
 
-        const userFind = await User.findOne({이메일: findEmail}) | [];
+        const userFind = await User.findOne({이메일: findEmail});
+
         if(!userFind) {
-            res.status(403).json({
+            return res.status(403).json({
                 success: false,
                 message: "이메일이 잘못되었습니다."
             });
@@ -39,17 +41,20 @@ export const resign = async (req, res) => {
         await mongodb();
 
         const userEmail = req.body.email;
+        const userPasswordTemp = req.body.password;
+        
+        const userPassword = encryptPassword(userPasswordTemp);
 
-        const findUser = await User.findOne({이메일: userEmail});
+        const findUser = await User.findOne({이메일: userEmail}, {비밀번호: userPassword});
         if(!findUser) {
             return res.status(403).json({
                 success: false,
-                message: "이메일 형식이 잘못됬거나, 회원이 존재하지 않습니다."
+                message: "로그인 정보가 일치하지 않거나 회원이 존재하지 않습니다."
             });
         }
         
         await User.deleteOne({이메일: userEmail});
-        
+
         return res.status(200).json({
             success: true,
             message: "회원 정보 삭제"

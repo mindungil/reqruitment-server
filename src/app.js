@@ -2,7 +2,6 @@ import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import authRouter from "./routes/auth/authRouter.js";
-import tokenRouter from "./routes/auth/tokenRouter.js"
 import cors from 'cors'
 import { mongodb } from "./config/mongodb.js";
 

@@ -11,7 +11,7 @@ export default function checkToken (req, res, next) {
             });
         };
 
-        const reqToken = reqTokenTemp.split(' ')[1] || [];
+        const reqToken = reqTokenTemp.split(' ')[1];
 
         if (!reqToken) {
             return res.status(403).json({ success: false, message: 'access token이 필요합니다.'});
