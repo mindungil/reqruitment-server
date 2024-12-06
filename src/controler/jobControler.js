@@ -51,7 +51,7 @@ export const insertJob = async (req, res) => {
     try {
         await mongodb();
 
-        const newJobData = req.query;
+        const newJobData = req.body.data;
         console.log(newJobData);
 
         const checkJobData = await JobData.findOne({제목: newJobData.제목});
@@ -82,8 +82,11 @@ export const deleteJob = async (req, res) => {
     try {
         await mongodb();
 
-        const jobName = req.query.name;
+        const jobName = req.body.data.제목;
         const checkJob = await JobData.findOne({제목: jobName});
+        
+        console.log(checkJob);
+
         if(!checkJob) {
             return res.status(403).json({
                 success: false,
@@ -103,3 +106,10 @@ export const deleteJob = async (req, res) => {
     }
 };
 
+export const updateJob = async (req, res) => {
+    // try {
+    //     await mongodb();
+
+        
+    // }
+};
