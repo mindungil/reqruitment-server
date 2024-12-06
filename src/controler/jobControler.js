@@ -30,11 +30,13 @@ export const getJobs = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "채용 공고 목록 조회 성공",
-            total,
-            page: pageNumber,
-            limit: pageSize,
-            totalPages: Math.ceil(total / pageSize),
-            jobs,
+            data:{
+                total: total,
+                page: pageNumber,
+                limit: pageSize,
+                totalPages: Math.ceil(total / pageSize),
+                jobs: jobs,
+            }
         });
     } catch (error) {
         res.status(500).json({
@@ -45,4 +47,59 @@ export const getJobs = async (req, res) => {
     }
 };
 
+export const insertJob = async (req, res) => {
+    try {
+        await mongodb();
+
+        const newJobData = req.query;
+        console.log(newJobData);
+
+        const checkJobData = await JobData.findOne({제목: newJobData.제목});
+
+        if(checkJobData) {
+            return res.status(403).json({
+                success: false,
+                message: '공고 이미 존재'
+            });
+        };
+
+        await JobData.create(newJobData);
+
+        res.status(200).json({
+            success: true,
+            message: '공고 등록 성공',
+            data: {
+                jobData: newJobData
+            }
+        });
+    } catch(err) {
+        console.error("공고 등록 중 오류 발생 : ", err);
+        throw err;
+    }
+};
+
+export const deleteJob = async (req, res) => {
+    try {
+        await mongodb();
+
+        const jobName = req.query.name;
+        const checkJob = await JobData.findOne({제목: jobName});
+        if(!checkJob) {
+            return res.status(403).json({
+                success: false,
+                message: '제목 오류'
+            });
+        }
+
+        await JobData.deleteOne({제목: jobName});
+
+        res.status(200).json({
+            success: true,
+            message: '공고 삭제 성공'
+        });
+    } catch(err) {
+        console.error("공고 삭제 중 오류 : ", err);
+        throw err;
+    }
+};
 

@@ -46,17 +46,17 @@ export const signin = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ success: false, message: '모든 필드를 입력해야 합니다.' });
+      return res.status(400).json({ success: false, message: '입력 오류' });
     }
 
     const user = await User.findOne({ 이메일: email }).exec();
     if (!user) {
-      return res.status(400).json({ success: false, message: '아이디 혹은 비밀번호를 잘못 입력하였습니다 - 1.' });
+      return res.status(400).json({ success: false, message: '입력 오류 - 1.' });
     }
 
     const hashedPassword = encryptPassword(password);
     if (user.비밀번호 !== hashedPassword) {
-      return res.status(400).json({ success: false, message: '아이디 혹은 비밀번호를 잘못 입력하였습니다 - 2.' });
+      return res.status(400).json({ success: false, message: '입력 오류 - 2.' });
     }
 
     const refreshToken = generateRefreshToken(user);
@@ -72,7 +72,6 @@ export const signin = async (req, res) => {
     res.status(200).json({
       success: true,
       message: '로그인 성공',
-      data: {user: user},
     });
   } catch (err) {
     res.status(500).json({ success: false, message: '서버 오류', error: err.message });

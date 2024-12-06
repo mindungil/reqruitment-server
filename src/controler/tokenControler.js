@@ -35,6 +35,6 @@ export const makeAccessToken = async (req, res) => {
 export const makeRefreshToken = (req, res) => {
     res.status(200).json({
         success: true,
-        message: `refresh token이 만료되었습니다. 다시 로그인 하세요.`
+        message: `재 로그인 필요`
     });
 };

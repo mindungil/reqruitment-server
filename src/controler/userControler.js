@@ -13,13 +13,13 @@ export const userProfile = async (req, res) => {
         if(!userFind) {
             return res.status(403).json({
                 success: false,
-                message: "이메일이 잘못되었습니다."
+                message: "입력 오류"
             });
         }
 
         return res.status(200).json({
                 success: true,
-                message: "회원 정보 응답",
+                message: "회원 정보 응답 성공",
                 data: {
                     name: userFind.이름,
                     sex: userFind.성별,
@@ -49,7 +49,7 @@ export const resign = async (req, res) => {
         if(!findUser) {
             return res.status(403).json({
                 success: false,
-                message: "로그인 정보가 일치하지 않거나 회원이 존재하지 않습니다."
+                message: "정보 오류"
             });
         }
         
@@ -57,7 +57,7 @@ export const resign = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "회원 정보 삭제"
+            message: "회원 정보 삭제 성공"
         });
     } catch(err) {
         console.log("회원 정보 삭제 오류 : ", err);
