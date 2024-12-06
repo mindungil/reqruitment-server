@@ -6,7 +6,7 @@ export const userProfile = async (req, res) => {
     try {
         await mongodb();
 
-        const findEmail = req.body.email;
+        const findEmail = req.query.email;
 
         const userFind = await User.findOne({이메일: findEmail});
 
@@ -21,6 +21,7 @@ export const userProfile = async (req, res) => {
                 success: true,
                 message: "회원 정보 응답 성공",
                 data: {
+                    _id: userFind.id,
                     name: userFind.이름,
                     sex: userFind.성별,
                     age: userFind.나이,
@@ -40,8 +41,8 @@ export const resign = async (req, res) => {
     try {
         await mongodb();
 
-        const userEmail = req.body.email;
-        const userPasswordTemp = req.body.password;
+        const userEmail = req.body.data.email;
+        const userPasswordTemp = req.body.data.password;
         
         const userPassword = encryptPassword(userPasswordTemp);
 

@@ -13,7 +13,7 @@ export const encryptPassword = (password) => {
 export const signup = async (req, res) => {
   try {
     await mongodb();
-    const { name, sex, age, history, residence, email, password } = req.body;
+    const { name, sex, age, history, residence, email, password } = req.body.data;
 
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: '모든 필드를 입력해야 합니다.' });
@@ -26,7 +26,7 @@ export const signup = async (req, res) => {
 
     const hashedPassword = encryptPassword(password);
 
-    const newUser = new User({ 이름: name, 성별: sex, 나이: age, 경력: history, 이메일: email, 비밀번호: hashedPassword });
+    const newUser = new User({ 이름: name, 성별: sex, 나이: age, 경력: history, 거주지: residence, 이메일: email, 비밀번호: hashedPassword });
     await newUser.save();
 
     res.status(201).json({
@@ -43,7 +43,7 @@ export const signup = async (req, res) => {
 export const signin = async (req, res) => {
   try {
     await mongodb();
-    const { email, password } = req.body;
+    const { email, password } = req.body.data;
 
     if (!email || !password) {
       return res.status(400).json({ success: false, message: '입력 오류' });
@@ -81,7 +81,7 @@ export const signin = async (req, res) => {
 // 로그아웃
 export const signout = async (req, res) => {
   try {
-    const { email } = req.user;
+    const { email } = req.body.data;
 
     // Redis에서 Refresh Token 삭제
     await deleteRefreshToken(email);
@@ -97,7 +97,7 @@ export const updateUser = async (req, res) => {
   try {
     await mongodb();
 
-    const { email, history, residence } = req.body;
+    const { email, history, residence } = req.body.data;
     const user = await User.findOne({이메일: email});
     
     if(!user) {
