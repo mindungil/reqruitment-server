@@ -6,44 +6,8 @@ export const getJobs = async (req, res) => {
     try {
         await mongodb();
 
-        const { id, page = 1, limit = 20, sortBy = '갱신날짜', order = 'desc', 지역, 경력, 직무분야 } = req.query;
+        const { page = 1, limit = 20, sortBy = '갱신날짜', order = 'desc', 지역, 경력, 직무분야 } = req.query;
 
-        if (id) {
-            // id로 특정 공고 상세 조회
-            const job = await JobData.findOneAndUpdate(
-                { _id: id },
-                { $inc: { 조회수: 1 } }, 
-                { new: true }
-            );
-
-            if (!job) {
-                return res.status(404).json({
-                    success: false,
-                    message: "해당 공고를 찾을 수 없습니다.",
-                });
-            }
-
-            const relatedJobs = await JobData.find({
-                $or: [
-                    { 지역: job.지역 },
-                    { 직무분야: job.직무분야 },
-                ],
-                _id: { $ne: id },
-            })
-                .limit(5)
-                .sort({ 갱신날짜: -1 });
-
-            return res.status(200).json({
-                success: true,
-                message: "공고 상세 정보 조회 성공",
-                data: {
-                    jobData: job,
-                    relatedJobData: relatedJobs
-                }
-            });
-        }
-
-        // id가 없을 경우 기존 페이징 로직
         const pageNumber = parseInt(page, 10);
         const pageSize = parseInt(limit, 10);
         const skip = (pageNumber - 1) * pageSize;
@@ -51,7 +15,7 @@ export const getJobs = async (req, res) => {
         const filter = {};
         if (지역) filter.지역 = { $regex: 지역, $options: 'i' };
         if (경력) filter.경력 = { $regex: 경력, $options: 'i' };
-        if (직무분야) filter.직무분야 = { $regex: 직무분야, $options: 'i' };
+        if (직무분야) filter.직무분야 = { $regex: 직무분야, $options: 'i' }; // 여러 기술 스택 중 하나라도 포함
 
         const sortOptions = {};
         sortOptions[sortBy] = order === 'asc' ? 1 : -1;
@@ -66,13 +30,13 @@ export const getJobs = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "채용 공고 목록 조회 성공",
-            data: {
+            data:{
                 total: total,
                 page: pageNumber,
                 limit: pageSize,
                 totalPages: Math.ceil(total / pageSize),
                 jobs: jobs,
-            },
+            }
         });
     } catch (error) {
         res.status(500).json({
@@ -83,7 +47,36 @@ export const getJobs = async (req, res) => {
     }
 };
 
+export const insertJob = async (req, res) => {
+    try {
+        await mongodb();
 
+        const newJobData = req.body.data;
+        console.log(newJobData);
+
+        const checkJobData = await JobData.findOne({제목: newJobData.제목});
+
+        if(checkJobData) {
+            return res.status(403).json({
+                success: false,
+                message: '공고 이미 존재'
+            });
+        };
+
+        await JobData.create(newJobData);
+
+        res.status(200).json({
+            success: true,
+            message: '공고 등록 성공',
+            data: {
+                jobData: newJobData
+            }
+        });
+    } catch(err) {
+        console.error("공고 등록 중 오류 발생 : ", err);
+        throw err;
+    }
+};
 
 export const deleteJob = async (req, res) => {
     try {
@@ -151,6 +144,59 @@ export const updateJob = async (req, res) => {
         res.status(500).json({
             success: false,
             message: '서버 오류',
+        });
+    }
+};
+export const getJobId = async (req, res) => {
+    try {
+        await mongodb();
+
+        const { id } = req.params;
+
+        // ObjectId 유효성 확인
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                success: false,
+                message: "유효하지 않은 공고 ID입니다.",
+            });
+        }
+
+        const job = await JobData.findOneAndUpdate(
+            { _id: new mongoose.Types.ObjectId(id) }, // new 키워드 추가
+            { $inc: { 조회수: 1 } },
+            { new: true }
+        );
+
+        if (!job) {
+            return res.status(404).json({
+                success: false,
+                message: "해당 공고를 찾을 수 없습니다.",
+            });
+        }
+
+        const relatedJobs = await JobData.find({
+            $or: [
+                { 지역: job.지역 },
+                { 직무분야: job.직무분야 },
+            ],
+            _id: { $ne: new mongoose.Types.ObjectId(id) }, // new 키워드 추가
+        })
+            .limit(5)
+            .sort({ 갱신날짜: -1 });
+
+        res.status(200).json({
+            success: true,
+            message: "공고 상세 정보 조회 성공",
+            data: {
+                job,
+                relatedJobs,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "공고 상세 정보 조회 중 오류 발생",
+            error: error.message,
         });
     }
 };
