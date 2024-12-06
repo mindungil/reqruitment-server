@@ -92,12 +92,11 @@ export const signout = async (req, res) => {
   }
 };
 
-// 회원 정보 수정 ---->>>>> 경력 및 거주지만 수정 가능하도록 설정.
 export const updateUser = async (req, res) => {
   try {
     await mongodb();
 
-    const { email, history, residence } = req.body.data;
+    const { email, password, history, residence } = req.body.data;
     const user = await User.findOne({이메일: email});
     
     if(!user) {
@@ -113,8 +112,11 @@ export const updateUser = async (req, res) => {
     if(!residence){
       residence = user.거주지
     }
+    if(!password) {
+      password = user.비밀번호;
+    }
     
-    await User.updateOne({이메일: email}, {$set: {경력: history ,거주지: residence}});
+    await User.updateOne({이메일: email}, {$set: {비밀번호: password, 경력: history ,거주지: residence}});
     console.log("user 정보가 업데이트 되었습니다. 유저 : ", user.이름);
 
     res.status(200).json({
