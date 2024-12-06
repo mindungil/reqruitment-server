@@ -107,9 +107,43 @@ export const deleteJob = async (req, res) => {
 };
 
 export const updateJob = async (req, res) => {
-    // try {
-    //     await mongodb();
+    try {
+        await mongodb(); // MongoDB 연결
 
-        
-    // }
+        const newData = req.body.data;
+        if (!newData || !newData.제목) {
+            return res.status(400).json({
+                success: false,
+                message: '유효하지 않은 요청',
+            });
+        }
+
+        let oldData = await JobData.findOne({ 제목: newData.제목 });
+        if (!oldData) {
+            return res.status(404).json({
+                success: false,
+                message: '공고 제목 오류',
+            });
+        }
+
+        const updatedData = await JobData.findOneAndUpdate(
+            { 제목: newData.제목 }, // 조건
+            { $set: newData }, // 업데이트할 데이터
+            { new: true } // 수정된 데이터를 반환
+        );
+
+        res.status(200).json({
+            success: true,
+            message: '데이터 수정 성공',
+            data: {
+                jobData: updatedData,
+            }
+        });
+    } catch (err) {
+        console.error('데이터 수정 중 오류: ', err);
+        res.status(500).json({
+            success: false,
+            message: '서버 오류',
+        });
+    }
 };

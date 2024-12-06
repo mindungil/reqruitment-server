@@ -106,6 +106,13 @@ export const updateUser = async (req, res) => {
         message: '접근 오류'
       });
     };
+
+    if(!history) {
+      history = user.경력;
+    }
+    if(!residence){
+      residence = user.거주지
+    }
     
     await User.updateOne({이메일: email}, {$set: {경력: history ,거주지: residence}});
     console.log("user 정보가 업데이트 되었습니다. 유저 : ", user.이름);
