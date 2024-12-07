@@ -111,11 +111,12 @@ export const applicationList = async (req, res) => {
         const { sort } = req.query; 
 
         const query = {}
-        query.지원자 = { $regex: user, $option: 'i'};
-        query.지원상태 = { $regex: status, $option: 'i'};
+        
+        if(user) query.지원자 = { $regex: user, $options: 'i'};
+        if(status) query.지원상태 = { $regex: status, $options: 'i'};
     
+        console.log(query);
 
-        // 정렬 조건 설정
         const sortCondition = {};
         if (sort === "asc") {
             sortCondition.지원날짜 = 1;
@@ -132,7 +133,6 @@ export const applicationList = async (req, res) => {
             }
         });
     } catch (err) {
-        // 에러 처리
         console.error("지원 내역 조회 중 오류 :", err);
         res.status(500).json({
             success: false,
