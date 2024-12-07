@@ -43,7 +43,7 @@ export const signup = async (req, res) => {
 export const signin = async (req, res) => {
   try {
     await mongodb();
-    const { email, password } = req.body.data;
+    const {email, password} = req.body.data;
 
     if (!email || !password) {
       return res.status(400).json({ success: false, message: '입력 오류' });
@@ -81,7 +81,7 @@ export const signin = async (req, res) => {
 // 로그아웃
 export const signout = async (req, res) => {
   try {
-    const { email } = req.body.data;
+    const email = req.body.data.email;
 
     // Redis에서 Refresh Token 삭제
     await deleteRefreshToken(email);
@@ -96,7 +96,15 @@ export const updateUser = async (req, res) => {
   try {
     await mongodb();
 
-    const { email, password, history, residence } = req.body.data;
+    const {email, password, history, residence} = req.body.data;
+  
+    if(!email) {
+      return res.status(404).json({
+        success: false,
+        message: '요청에 이메일 필요'
+      });
+    }
+    
     const user = await User.findOne({이메일: email});
     
     if(!user) {

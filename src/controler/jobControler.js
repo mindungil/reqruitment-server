@@ -6,16 +6,16 @@ export const getJobs = async (req, res) => {
     try {
         await mongodb();
 
-        const { page = 1, limit = 20, sortBy = '갱신날짜', order = 'desc', 지역, 경력, 직무분야 } = req.query;
+        const { page = 1, limit = 20, sortBy = '갱신날짜', order = 'desc', location, history, jobfield } = req.query;
 
         const pageNumber = parseInt(page, 10);
         const pageSize = parseInt(limit, 10);
         const skip = (pageNumber - 1) * pageSize;
 
         const filter = {};
-        if (지역) filter.지역 = { $regex: 지역, $options: 'i' };
-        if (경력) filter.경력 = { $regex: 경력, $options: 'i' };
-        if (직무분야) filter.직무분야 = { $regex: 직무분야, $options: 'i' }; // 여러 기술 스택 중 하나라도 포함
+        if (location) filter.지역 = { $regex: location, $options: 'i' };
+        if (history) filter.경력 = { $regex: history, $options: 'i' };
+        if (jobfield) filter.직무분야 = { $regex: jobfield, $options: 'i' }; // 여러 기술 스택 중 하나라도 포함
 
         const sortOptions = {};
         sortOptions[sortBy] = order === 'asc' ? 1 : -1;
@@ -51,10 +51,10 @@ export const insertJob = async (req, res) => {
     try {
         await mongodb();
 
-        const newJobData = req.body.data;
+        const newJobData = req.body.data; // name : 공고명
         console.log(newJobData);
 
-        const checkJobData = await JobData.findOne({제목: newJobData.제목});
+        const checkJobData = await JobData.findOne({제목: newJobData.name});
 
         if(checkJobData) {
             return res.status(403).json({
@@ -62,6 +62,20 @@ export const insertJob = async (req, res) => {
                 message: '공고 이미 존재'
             });
         };
+
+        newJobData = {
+            회사명: req.body.data.company,
+            제목: req.body.data.name,
+            링크: req.body.data.link,
+            지역: req.body.data.location,
+            경력: req.body.data.history,
+            학력: req.body.data.education,
+            고용형태: req.body.data.jobtype,
+            마감일: req.body.data.deadline,
+            직무분야: req.body.data.jobfield,
+            기타정보: req.body.data.etc,
+            갱신날짜: req.body.data.modifydate
+        }
 
         await JobData.create(newJobData);
 
@@ -82,7 +96,7 @@ export const deleteJob = async (req, res) => {
     try {
         await mongodb();
 
-        const jobName = req.body.data.제목;
+        const jobName = req.body.data.name;
         const checkJob = await JobData.findOne({제목: jobName});
         
         console.log(checkJob);
@@ -118,7 +132,7 @@ export const updateJob = async (req, res) => {
             });
         }
 
-        let oldData = await JobData.findOne({ 제목: newData.제목 });
+        let oldData = await JobData.findOne({ 제목: newData.name });
         if (!oldData) {
             return res.status(404).json({
                 success: false,
@@ -126,9 +140,23 @@ export const updateJob = async (req, res) => {
             });
         }
 
+        const newJobData = {
+            회사명: req.body.data.company,
+            제목: req.body.data.name,
+            링크: req.body.data.link,
+            지역: req.body.data.location,
+            경력: req.body.data.history,
+            학력: req.body.data.education,
+            고용형태: req.body.data.jobtype,
+            마감일: req.body.data.deadline,
+            직무분야: req.body.data.jobfield,
+            기타정보: req.body.data.etc,
+            갱신날짜: req.body.data.modifydate
+        }
+
         const updatedData = await JobData.findOneAndUpdate(
-            { 제목: newData.제목 }, // 조건
-            { $set: newData }, // 업데이트할 데이터
+            { 제목: newData.name }, // 조건
+            { $set: newJobData }, // 업데이트할 데이터
             { new: true } // 수정된 데이터를 반환
         );
 
