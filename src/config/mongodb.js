@@ -7,10 +7,11 @@ export const mongodb = async () => {
         await mongoose.connect(mongoURI);
         
         const db = mongoose.connection;
-
+        console.log("연결 성공 !!~~!!");
+        
         db.on('error', console.error.bind(console, '연결 실패 : '));
         db.once('open', () => {
-          console.log('연결 성공');
+          console.log('연결 성공~~');
         });
     } catch(err){
         console.error("DataBase 접속 err : ", err);
