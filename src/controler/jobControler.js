@@ -2,6 +2,23 @@ import mongoose from 'mongoose';
 import { mongodb } from '../config/mongodb.js';
 import JobData from '../models/jobOpenings.js';
 
+async function incrementSearchCount(jobId) {
+    const key = `searchJobCount:${jobId}`;
+    try {
+        const currentValue = await redisCli.get(key);
+        if (currentValue === null) {
+            await redisCli.set(key, 1);
+            console.log(`Key :'${key}'`);
+        } else {
+            const newValue = parseInt(currentValue, 10) + 1;
+            await redisCli.set(key, newValue);
+            console.log(`Key :'${key}' -> ${newValue}`);
+        }
+    } catch (err) {
+        console.error('redis count 저장 오류:', err);
+    }
+};
+
 export const getJobs = async (req, res) => {
     try {
         await mongodb();
@@ -189,11 +206,7 @@ export const getJobId = async (req, res) => {
             });
         }
 
-        const job = await JobData.findOneAndUpdate(
-            { _id: new mongoose.Types.ObjectId(id) }, // new 키워드 추가
-            { $inc: { 조회수: 1 } },
-            { new: true }
-        );
+        const job = await JobData.findOne({ _id: new mongoose.Types.ObjectId(id) });
 
         if (!job) {
             return res.status(404).json({
@@ -201,6 +214,8 @@ export const getJobId = async (req, res) => {
                 message: "해당 공고를 찾을 수 없습니다.",
             });
         }
+
+        incrementSearchCount(id);
 
         const relatedJobs = await JobData.find({
             $or: [
@@ -226,5 +241,50 @@ export const getJobId = async (req, res) => {
             message: "공고 상세 정보 조회 중 오류 발생",
             error: error.message,
         });
+    }
+};
+
+export const getJobSearchCount = async (req, res) => {
+    try {
+        const id = req.body.data;
+
+        const count = await redisCli.get(`searchJobCount:${id}`);
+
+        if(!count) {
+            return res.status(404).json({
+                success: false,
+                message: '공고 id 가 존재하지 않거나 조회 횟수가 없습니다.'
+            });
+        }
+
+         res.status(200).json({
+            success: true,
+            message: '조회 횟수 출력 성공',
+            data: {
+                searchCount: count
+            }
+         });
+    } catch(err) {
+        console.error('공고 조회 횟수 출력 중 오류 : ', err);
+        throw err;
+    }
+};
+
+export const fullJobCount = async (req, res) => {
+    try {
+        await mongodb();
+
+        const fullCount = await JobData.countDocuments();
+
+        res.status(200).json({
+            success: true,
+            message: '전체 공고 개수 조회',
+            data: {
+                jobCount: fullCount
+            }
+        });
+    } catch(err) {
+        console.error("전체 공고 조회 중 오류 : ", err);
+        throw err;
     }
 };

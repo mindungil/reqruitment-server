@@ -36,6 +36,32 @@ async function decrementApplicationCount(companyName) {
     }
 }
 
+export const getApplicationCount = async (req,res) => {
+    try {
+        const { company } = req.body.data;
+        const dataId = `applicationCount:${company}`
+        const count = await redisCli.get(dataId);
+
+        if(!count) {
+            return res.status(404).json({
+                success:true,
+                message: '지원 횟수 또는 회사가 존재하지 않습니다.'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: '지원 횟수 조회 성공',
+            data: {
+                ApplicationCount: count
+            }
+        });
+    } catch(err) {
+        console.log("지원 횟수 조회 중 오류 : ", err);
+        throw err;
+    }
+}
+
 
 export const applyJob = async (req, res) => {
     try {

@@ -66,12 +66,17 @@ export const signin = async (req, res) => {
     await storeRefreshToken(email, refreshToken);
     await storeAccessToken(email, accessToken);
 
-    res.set('Authorization', `Bearer ${accessToken}`); // 헤더로 클라이언트에 엑세스 토큰 보내주기
-    res.set('X-Refresh-Token', `Bearer ${refreshToken}`);
+    // res.set('Authorization', `Bearer ${accessToken}`); // 헤더로 클라이언트에 엑세스 토큰 보내주기
+    // res.set('X-Refresh-Token', `Bearer ${refreshToken}`); 
+    // 바디로 수정
 
     res.status(200).json({
       success: true,
       message: '로그인 성공',
+      data: {
+        refreshToken: refreshToken,
+        accessToken: accessToken
+      }
     });
   } catch (err) {
     res.status(500).json({ success: false, message: '서버 오류', error: err.message });

@@ -7,17 +7,11 @@ import { userProfile, resign } from '../controler/userControler.js';
 const authRouter = express.Router();
 
 authRouter.post('/login', signin);
-
 authRouter.post('/register', signup);
-
 authRouter.post('/logout', signout);
-
 authRouter.put('/profile', checkToken, updateUser);
-
 authRouter.post('/refresh', makeAccessToken);
-
 authRouter.get('/profile', checkToken, userProfile);
-
-authRouter.post('/resigns', checkToken, resign);
+authRouter.post('/resign', checkToken, resign);
 
 export default authRouter;
