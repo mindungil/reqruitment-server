@@ -1,6 +1,6 @@
 import express from 'express'
 import { getJobs, insertJob, deleteJob, updateJob, getJobId } from '../../controler/jobControler.js';
-
+import checkToken from '../../middlewares/tokenMiddleware.js';
 const jobRouter = express.Router();
 
 jobRouter.get('/getjobs', getJobs);
