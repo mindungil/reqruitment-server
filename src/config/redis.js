@@ -1,6 +1,8 @@
 import {createClient} from 'redis'
 
-const client = createClient({legacyMode: true});
+const client = createClient({
+  legacyMode: true
+});
 
 client.on('connect', () => {
   console.info('Redis connected');
