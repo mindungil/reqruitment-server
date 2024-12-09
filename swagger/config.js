@@ -8,6 +8,13 @@ const swaggerDefinition = {
     description: 'Reqruitment, Back-end server using saramin webcrawling', // 설명
   },
   components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT"
+      }
+    },
     schemas: {
       Application: {
         type: "object",
