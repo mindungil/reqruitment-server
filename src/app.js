@@ -8,6 +8,8 @@ import jobRouter from "./routes/jobRouter.js";
 import applicationRouter from "./routes/applicationRouter.js";
 import bookmarkRouter from "./routes/bookmarkRouter.js"
 import checkToken from "./middlewares/tokenMiddleware.js";
+import swaggerUi from 'swagger-ui-express'
+import swaggerSpec from "../swagger/config.js";
 
 dotenv.config(); 
 
@@ -22,12 +24,12 @@ app.get("/", (req, res) => {
   res.send("This is a Reqruitment-server");
 });
 
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/auth", authRouter);
 app.use("/jobs", checkToken, jobRouter);
 app.use("/applications", checkToken, applicationRouter);
 app.use("/bookmarks", checkToken, bookmarkRouter);
 
 app.listen(port, () => {
-  console.log(`서버에 연결되었습니다. port: ${port} http://localhost:${port}/`);
+  console.log(`서버에 연결되었습니다. http://localhost:${port}/`);
 });
