@@ -20,23 +20,23 @@ const swaggerDefinition = {
         type: "object",
         properties: {
           지원공고: {
-            type: "String",
+            type: "string",
             example: "DB내 지원공고 ID"
           },
           회사명: {
-            type: "String",
+            type: "string",
             example: "무한상사"
           },
           지원자: {
-            type: "String",
+            type: "string",
             example: "길민준",
           },
           지원날짜: {
-            type: "String",
+            type: "string",
             example: "2024-12-09",
           },
           지원상태: {
-            type: "String",
+            type: "string",
             example: "완료",
           },
         },
@@ -45,31 +45,31 @@ const swaggerDefinition = {
         type: "object",
         properties: {
           회사명: {
-            type: "String",
-            exapmle: "무한상사",
+            type: "string",
+            example: "무한상사",
           },
           채용중: {
             type: "Number",
             example: 3,
           },
           기업규모: {
-            type: "String",
+            type: "string",
             example: "중견기업",
           },
           사업분야: {
-            type: "String",
+            type: "string",
             example: "IT",
           },
           존속기간: {
-            type: "String",
+            type: "string",
             example: "3개월",
           },
           CEO: {
-            type: "String",
+            type: "string",
             example: "길민준",
           },
           세부정보: {
-            type: "String",
+            type: "string",
             example: "자유로운 출근"
           },
         },
@@ -211,7 +211,7 @@ const swaggerDefinition = {
 
 const options = {
   swaggerDefinition,
-  apis: ['../src/routes/*.js'], // JSDoc 주석이 포함된 파일 경로
+  apis: ['src/routes/*.js'], // JSDoc 주석이 포함된 파일 경로
 };
 
 const swaggerSpec =  swaggerJSDoc(options);
