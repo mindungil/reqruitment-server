@@ -502,6 +502,8 @@ authRouter.get('/profile', checkToken, userProfile);
  *     description: 사용자의 이메일과 비밀번호를 받아 해당 사용자의 정보를 삭제합니다.
  *     tags:
  *       - Authentication
+ *     security:
+ *       - bearerAuth: []  # 토큰 기반 인증 명시
  *     requestBody:
  *       required: true
  *       content:
