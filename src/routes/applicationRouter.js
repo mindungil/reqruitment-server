@@ -10,6 +10,8 @@ const applicationRouter = express.Router();
  *      summary: 공고 지원
  *      description: 사용자가 특정 공고에 지원합니다.
  *      tags: [Applications]
+ *      security:
+ *       - bearerAuth: []
  *      requestBody:
  *          required: true
  *          content:
@@ -23,6 +25,46 @@ const applicationRouter = express.Router();
  *                  application/json:
  *                      schema:
  *                          $ref: '#/components/schemas/Application'
+ *          403:
+ *              description: 지원자 정보 DB에 존재하지 않음
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              success:
+ *                                  type: boolean
+ *                                  example: false
+ *                              message:
+ *                                  type: string
+ *                                  example: 지원자 정보(이메일)가 DB에 존재하지 않음
+ *          404:
+ *              description: 지원자가 이미 지원한 공고
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              success:
+ *                                  type: boolean
+ *                                  example: false
+ *                              message:
+ *                                  type: string
+ *                                  example: 이미 지원자가 지원된 공고입니다.
+ *          500:
+ *              description: 공고 지원 실패
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              success:
+ *                                  type: boolean
+ *                                  example: false
+ *                              message:
+ *                                  type: string
+ *                                  example: 공고 지원 실패
+ *                          
  */ 
 applicationRouter.post('/', applyJob);
 
@@ -33,6 +75,8 @@ applicationRouter.post('/', applyJob);
  *     summary: 지원 내역 조회
  *     description: 지원자의 지원 내역을 조회합니다. 검색 조건(user, status)와 정렬 조건(sort)을 설정할 수 있습니다.
  *     tags: [Applications]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: user
@@ -40,10 +84,10 @@ applicationRouter.post('/', applyJob);
  *           type: string
  *         description: 지원자 이름을 검색합니다 (부분 검색 가능).
  *       - in: query
- *         name: status
+ *         name: 상태
  *         schema:
  *           type: string
- *         description: 지원 상태를 검색합니다 (부분 검색 가능).
+ *         description: 지원 상태를 검색합니다 (부분 검색 가능, 접수, 진행, 완료 존재 ).
  *       - in: query
  *         name: sort
  *         schema:
@@ -99,6 +143,8 @@ applicationRouter.get('/', applicationList);
  *     description: 특정 지원 ID에 대한 공고 지원 내역을 취소합니다.
  *     tags:
  *       - Applications
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -170,20 +216,16 @@ applicationRouter.delete('/:id', canncelApply);
  *     description: 특정 회사의 지원 횟수를 조회합니다.
  *     tags:
  *       - Applications
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               data:
- *                 type: object
- *                 properties:
- *                   company:
- *                     type: string
- *                     description: 조회하려는 회사 이름
- *                     example: "ABC Corp"
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: company
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "(주)알레르망"
+ *         description: 조회하려는 회사 이름
  *     responses:
  *       200:
  *         description: 지원 횟수 조회 성공
@@ -213,7 +255,7 @@ applicationRouter.delete('/:id', canncelApply);
  *               properties:
  *                 success:
  *                   type: boolean
- *                   example: true
+ *                   example: false
  *                 message:
  *                   type: string
  *                   example: "지원 횟수 또는 회사가 존재하지 않습니다."

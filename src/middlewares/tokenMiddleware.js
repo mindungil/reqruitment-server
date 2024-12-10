@@ -18,7 +18,7 @@ export default function checkToken (req, res, next) {
         }
 
         const decode = jwt.verify(reqToken, process.env.JWT_SECRET);
-
+        
         console.log("요쳥 토큰 유효 확인 : ");
         next();
     } catch(err) {

@@ -2,10 +2,6 @@ import express from 'express'
 import { getJobs, insertJob, deleteJob, updateJob, getJobId, fullJobCount, getJobSearchCount } from '../controler/jobControler.js';
 const jobRouter = express.Router();
 
-/**
- * @swagger
- * /jobs/
- */
 jobRouter.get('/getjobs', getJobs);
 jobRouter.get('/getjobs/:id', getJobId);
 jobRouter.post('/insertjobs', insertJob);
@@ -13,74 +9,6 @@ jobRouter.post('/updatejobs', updateJob);
 jobRouter.post('/deletejobs', deleteJob);
 jobRouter.post('/count', getJobSearchCount);
 jobRouter.get('/fullcount', fullJobCount);
-
-/**
- * @swagger
- * components:
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- *   schemas:
- *     JobData:
- *       type: object
- *       properties:
- *         회사명:
- *           type: string
- *           example: "무한상사"
- *         제목:
- *           type: string
- *           example: "백엔드 개발자 모집"
- *         링크:
- *           type: string
- *           format: uri
- *           example: "https://example.com/job-posting"
- *         지역:
- *           type: string
- *           example: "서울"
- *         경력:
- *           type: string
- *           example: "신입/경력"
- *         학력:
- *           type: string
- *           example: "대졸 이상"
- *         고용형태:
- *           type: string
- *           example: "정규직"
- *         마감일:
- *           type: string
- *           format: date
- *           example: "2024-12-31"
- *         직무분야:
- *           type: string
- *           example: "소프트웨어 개발"
- *         기타정보:
- *           type: string
- *           example: "팀원들과 자유롭게 소통하는 업무 환경"
- *         갱신날짜:
- *           type: string
- *           format: date
- *           example: "2024-12-09"
- *     Review:
- *       type: object
- *       properties:
- *         회사:
- *           type: string
- *           example: "무한상사"
- *         작성자:
- *           type: string
- *           example: "길민준"
- *         평점:
- *           type: number
- *           example: 4.5
- *         평가:
- *           type: string
- *           example: "업무 환경이 매우 자유롭고 좋습니다."
- *         등록날짜:
- *           type: string
- *           example: "2024-12-09"
- */
 
 /**
  * @swagger
@@ -219,7 +147,7 @@ jobRouter.get('/fullcount', fullJobCount);
  *         required: true
  *         schema:
  *           type: string
- *           example: "64eabc12345f67890debc123"
+ *           example: "6747ff9777fcb5c0128d7576"
  *         description: 채용 공고 ID
  *     responses:
  *       200:
@@ -313,8 +241,13 @@ jobRouter.get('/fullcount', fullJobCount);
  *           schema:
  *             type: object
  *             properties:
+ *               id: 
+ *                 type: string
+ *                 example: "6747ff9777fcb5c0128d7576"
+ *                 description: 채용 공고 ID
  *               data:
  *                 $ref: '#/components/schemas/JobData'
+ * 
  *     responses:
  *       200:
  *         description: 성공적으로 공고 데이터를 업데이트했습니다.

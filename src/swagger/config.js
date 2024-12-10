@@ -21,15 +21,19 @@ const swaggerDefinition = {
         properties: {
           지원공고: {
             type: "string",
-            example: "DB내 지원공고 ID"
+            example: "6747ff9777fcb5c0128d7573"
           },
           회사명: {
             type: "string",
-            example: "무한상사"
+            example: "(주)알레르망"
           },
           지원자: {
             type: "string",
             example: "길민준",
+          },
+          이메일: {
+            type: "string",
+            example: "user@example.com"
           },
           지원날짜: {
             type: "string",
@@ -37,7 +41,7 @@ const swaggerDefinition = {
           },
           지원상태: {
             type: "string",
-            example: "완료",
+            example: "접수",
           },
         },
       },
@@ -189,7 +193,7 @@ const swaggerDefinition = {
           },
           이메일: {
             type: "string",
-            example: "example@example.com",
+            example: "user@example.com",
           },
           거주지: {
             type: "string",
@@ -198,7 +202,7 @@ const swaggerDefinition = {
           비밀번호: {
             type: "string",
             format: "password",
-            example: "mypassword123",
+            example: "password123",
           },
         },
       },

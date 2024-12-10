@@ -16,11 +16,11 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
 app.use(cors({ exposedHeaders: ['Authorization', 'X-Refresh-Token'] }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("/", (req, res) => {
   res.send("This is a Reqruitment-server");

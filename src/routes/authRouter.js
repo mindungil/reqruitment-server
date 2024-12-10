@@ -126,7 +126,7 @@ authRouter.post('/login', signin);
  *                       properties:
  *                         name:
  *                           type: string
- *                           example: "홍길동"
+ *                           example: "길민준"
  *                         email:
  *                           type: string
  *                           example: "user@example.com"
@@ -422,7 +422,7 @@ authRouter.post('/refresh', makeAccessToken);
  *         required: true
  *         schema:
  *           type: string
- *         description: Bearer 형식의 Access Token (e.g., "Bearer <token>")
+ *         description: Access Token
  *     responses:
  *       200:
  *         description: 사용자 프로필 조회 성공

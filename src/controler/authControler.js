@@ -1,6 +1,6 @@
 import User from '../models/userModel.js';
 import crypto from 'crypto'; // Base64 암호화를 위한 모듈
-import { storeRefreshToken, deleteRefreshToken, storeAccessToken } from '../models/tokenModel.js';
+import { storeRefreshToken, deleteRefreshToken, storeAccessToken, deleteAccessToken } from '../models/tokenModel.js';
 import { mongodb } from '../config/mongodb.js';
 import { generateAccessToken, generateRefreshToken } from './tokenControler.js';
 
@@ -13,20 +13,20 @@ export const encryptPassword = (password) => {
 export const signup = async (req, res) => {
   try {
     await mongodb();
-    const { name, sex, age, history, residence, email, password } = req.body.data;
+    const { 이름, 성별, 나이, 경력, 거주지, 이메일, 비밀번호 } = req.body;
 
-    if (!name || !email || !password) {
+    if (!이름 || !이메일 || !비밀번호) {
       return res.status(400).json({ success: false, message: '모든 필드를 입력해야 합니다.' });
     }
 
-    const existingUser = await User.findOne({ 이메일: email });
+    const existingUser = await User.findOne({ 이메일: 이메일 });
     if (existingUser) {
       return res.status(400).json({ success: false, message: '이미 가입된 이메일입니다.' });
     }
 
-    const hashedPassword = encryptPassword(password);
+    const hashedPassword = encryptPassword(비밀번호);
 
-    const newUser = new User({ 이름: name, 성별: sex, 나이: age, 경력: history, 거주지: residence, 이메일: email, 비밀번호: hashedPassword });
+    const newUser = new User({ 이름: 이름, 성별: 성별, 나이: 나이, 경력: 경력, 거주지: 거주지, 이메일: 이메일, 비밀번호: hashedPassword });
     await newUser.save();
 
     res.status(201).json({
@@ -51,12 +51,12 @@ export const signin = async (req, res) => {
 
     const user = await User.findOne({ 이메일: email }).exec();
     if (!user) {
-      return res.status(400).json({ success: false, message: '입력 오류 - 1.' });
+      return res.status(400).json({ success: false, message: '유저 정보가 없습니다.' });
     }
 
     const hashedPassword = encryptPassword(password);
     if (user.비밀번호 !== hashedPassword) {
-      return res.status(400).json({ success: false, message: '입력 오류 - 2.' });
+      return res.status(400).json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
     }
 
     const refreshToken = generateRefreshToken(user);
@@ -90,6 +90,7 @@ export const signout = async (req, res) => {
 
     // Redis에서 Refresh Token 삭제
     await deleteRefreshToken(email);
+    await deleteAccessToken(email);
 
     res.status(200).json({ success: true, message: '로그아웃 성공' });
   } catch (err) {
@@ -129,7 +130,8 @@ export const updateUser = async (req, res) => {
       password = user.비밀번호;
     }
     
-    await User.updateOne({이메일: email}, {$set: {비밀번호: password, 경력: history ,거주지: residence}});
+    const encodingPassword = encryptPassword(password);
+    await User.updateOne({이메일: email}, {$set: {비밀번호: encodingPassword, 경력: history ,거주지: residence}});
     console.log("user 정보가 업데이트 되었습니다. 유저 : ", user.이름);
 
     res.status(200).json({

@@ -28,12 +28,12 @@ bookmarkRouter.get('/', getBookmark);
  *                 properties:
  *                   id:
  *                     type: string
- *                     example: "64f4ba4e6f527ab0c01234ab"
- *                     description: 북마크할 공고의 MongoDB ObjectId
+ *                     example: "6747ff9777fcb5c0128d7576"
+ *                     description: 북마크할 공고의 ObjectId
  *                   user:
  *                     type: string
- *                     example: "user123"
- *                     description: 북마크를 저장하거나 삭제할 사용자의 ID
+ *                     example: "길민준"
+ *                     description: 북마크를 저장하거나 삭제할 사용자의 이름
  *     responses:
  *       200:
  *         description: 북마크 저장 또는 삭제 성공
@@ -77,7 +77,6 @@ bookmarkRouter.get('/', getBookmark);
  *                 message:
  *                   type: string
  *                   example: "서버 오류 발생"
- *
  *   get:
  *     summary: 북마크 조회
  *     description: 특정 사용자의 북마크 목록을 조회합니다.
@@ -85,28 +84,28 @@ bookmarkRouter.get('/', getBookmark);
  *       - Bookmarks
  *     security:
  *       - bearerAuth: []  # 토큰 기반 인증 명시
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               data:
- *                 type: object
- *                 properties:
- *                   user:
- *                     type: string
- *                     example: "user123"
- *                     description: 조회할 사용자의 ID
- *                   page:
- *                     type: integer
- *                     example: 1
- *                     description: 페이지 번호 (기본값 1)
- *                   limit:
- *                     type: integer
- *                     example: 10
- *                     description: 페이지 당 항목 수 (기본값 10)
+ *     parameters:
+ *       - in: query
+ *         name: user
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "길민준"
+ *         description: 조회할 사용자의 이름
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *           example: 1
+ *         description: 페이지 번호 (기본값 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *           example: 10
+ *         description: 페이지 당 항목 수 (기본값 10)
  *     responses:
  *       200:
  *         description: 북마크 조회 성공

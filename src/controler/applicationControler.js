@@ -1,4 +1,5 @@
 import Application from '../models/applicationModel.js'
+import User from '../models/userModel.js';
 import { mongodb } from '../config/mongodb.js';
 import redisCli from '../config/redis.js';
 import mongoose from 'mongoose';
@@ -38,9 +39,11 @@ async function decrementApplicationCount(companyName) {
 
 export const getApplicationCount = async (req,res) => {
     try {
-        const { company } = req.body.data;
+        const { company } = req.query;
         const dataId = `applicationCount:${company}`
         const count = await redisCli.get(dataId);
+
+        console.log("helo");
 
         if(!count) {
             return res.status(404).json({
@@ -67,12 +70,30 @@ export const applyJob = async (req, res) => {
     try {
         await mongodb();
 
-        const applyData = req.body.data;
+        const applyData = req.body;
+
+        const userEmail = applyData.이메일;
+        const userData = await User.findOne({이메일: userEmail});
+
+        if(!userData) {
+            return res.status(403).json({
+                success: false,
+                message: '지원자 정보가 DB에 존재하지 않음'
+            });
+        }
+
+        const checkApplyData = await Application.findOne({지원자: applyData.지원자, 이메일: userEmail, 지원공고: applyData.지원공고});
+        if(checkApplyData) {
+            return res.status(404).json({
+                success: false,
+                message: '이미 지원자가 지원된 공고입니다.'
+            });
+        }
 
         const insertApplyData = await Application.create(applyData);
 
         if(!insertApplyData) {
-            return res.status(404).json({
+            return res.status(500).json({
                 success: false,
                 message: '공고 지원 실패'
             });
@@ -109,7 +130,7 @@ export const canncelApply = async (req, res) => {
         const applyData = await Application.findOne({_id: new mongoose.Types.ObjectId(id)});
 
         if(!applyData) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
                 message: '지원 내역이 존재하지 않습니다.'
             });
@@ -138,10 +159,10 @@ export const applicationList = async (req, res) => {
 
         const query = {}
         
-        if(user) query.지원자 = { $regex: user, $options: 'i'};
-        if(status) query.지원상태 = { $regex: status, $options: 'i'};
+        if(user) query.지원자 = user;
+        if(status) query.지원상태 = status;
     
-        console.log(query);
+        console.log('query :', query);
 
         const sortCondition = {};
         if (sort === "asc") {
