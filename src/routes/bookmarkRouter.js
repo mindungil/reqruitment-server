@@ -102,11 +102,11 @@ bookmarkRouter.get('/', getBookmark);
  *                   page:
  *                     type: integer
  *                     example: 1
- *                     description: 페이지 번호 (기본값: 1)
+ *                     description: 페이지 번호 (기본값 1)
  *                   limit:
  *                     type: integer
  *                     example: 10
- *                     description: 페이지 당 항목 수 (기본값: 10)
+ *                     description: 페이지 당 항목 수 (기본값 10)
  *     responses:
  *       200:
  *         description: 북마크 조회 성공
