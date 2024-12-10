@@ -1,6 +1,5 @@
 import redisCli from '../config/redis.js';
 
-// 토큰 저장 (14일 만료)
 export const storeRefreshToken = async (userEmail, refreshToken) => {
   try {
     await redisCli.setEx(`refreshToken:${userEmail}`, 1209600, refreshToken); // 14일 = 1209600초
@@ -11,7 +10,6 @@ export const storeRefreshToken = async (userEmail, refreshToken) => {
   }
 };
 
-// 토큰 조회
 export const getRefreshToken = async (userEmail) => {
   try {
     const token = await redisCli.get(`refreshToken:${userEmail}`);
@@ -23,7 +21,6 @@ export const getRefreshToken = async (userEmail) => {
   }
 };
 
-// 토큰 삭제
 export const deleteRefreshToken = async (userEmail) => {
   try {
     const result = await redisCli.del(`refreshToken:${userEmail}`);
@@ -35,7 +32,6 @@ export const deleteRefreshToken = async (userEmail) => {
   }
 };
 
-// 모든 토큰 삭제
 export const clearAllTokens = async () => {
   try {
     const keys = await redisCli.keys('refreshToken:*');

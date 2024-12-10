@@ -15,6 +15,8 @@ export const makeAccessToken = async (req, res) => {
     const newAccessToken = generateAccessToken(userRefreshToken);   // refersh token 전달 ---- >>>> access token이 만료 되었을 때만.
     const serverRefreshToken = await getRefreshToken(req.body.email);  // 엑세스 토큰을 요청 할 때는 이메일도 보내줘야함.
 
+    console.log(serverRefreshToken);
+    console.log(userRefreshToken);
     if(userRefreshToken == serverRefreshToken){
         res.set('Authorization', `Bearer ${newAccessToken}`);
         storeAccessToken(req.body.email, newAccessToken);

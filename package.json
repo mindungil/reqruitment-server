@@ -21,6 +21,9 @@
     "mongoose": "^8.8.3",
     "r": "^0.0.5",
     "redis": "^4.7.0",
-    "redis-server": "^1.2.2"
+    "redis-server": "^1.2.2",
+    "swagger": "^0.7.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }

@@ -68,10 +68,10 @@ export const insertJob = async (req, res) => {
     try {
         await mongodb();
 
-        const newJobData = req.body.data; // name : 공고명
+        const newJobData = req.body; // name : 공고명
         console.log(newJobData);
 
-        const checkJobData = await JobData.findOne({제목: newJobData.name});
+        const checkJobData = await JobData.findOne({제목: newJobData.제목});
 
         if(checkJobData) {
             return res.status(403).json({
@@ -79,20 +79,6 @@ export const insertJob = async (req, res) => {
                 message: '공고 이미 존재'
             });
         };
-
-        newJobData = {
-            회사명: req.body.data.company,
-            제목: req.body.data.name,
-            링크: req.body.data.link,
-            지역: req.body.data.location,
-            경력: req.body.data.history,
-            학력: req.body.data.education,
-            고용형태: req.body.data.jobtype,
-            마감일: req.body.data.deadline,
-            직무분야: req.body.data.jobfield,
-            기타정보: req.body.data.etc,
-            갱신날짜: req.body.data.modifydate
-        }
 
         await JobData.create(newJobData);
 
@@ -141,39 +127,28 @@ export const updateJob = async (req, res) => {
     try {
         await mongodb(); // MongoDB 연결
 
-        const newData = req.body.data;
-        if (!newData || !newData.제목) {
+        const jobData = req.body.data;
+        const { id } = req.body;
+        const newData = jobData;
+        if (!newData || !id) {
             return res.status(400).json({
                 success: false,
                 message: '유효하지 않은 요청',
             });
         }
 
-        let oldData = await JobData.findOne({ 제목: newData.name });
+        let oldData = await JobData.findById(id);
         if (!oldData) {
             return res.status(404).json({
                 success: false,
-                message: '공고 제목 오류',
+                message: '공고 id 오류',
             });
         }
 
-        const newJobData = {
-            회사명: req.body.data.company,
-            제목: req.body.data.name,
-            링크: req.body.data.link,
-            지역: req.body.data.location,
-            경력: req.body.data.history,
-            학력: req.body.data.education,
-            고용형태: req.body.data.jobtype,
-            마감일: req.body.data.deadline,
-            직무분야: req.body.data.jobfield,
-            기타정보: req.body.data.etc,
-            갱신날짜: req.body.data.modifydate
-        }
-
+        const objectId = new mongoose.Types.ObjectId(id);
         const updatedData = await JobData.findOneAndUpdate(
-            { 제목: newData.name }, // 조건
-            { $set: newJobData }, // 업데이트할 데이터
+            { _id: objectId  }, // 조건
+            { $set: newData }, // 업데이트할 데이터
             { new: true } // 수정된 데이터를 반환
         );
 

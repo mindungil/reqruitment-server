@@ -51,7 +51,7 @@ export const getBookmark = async (req, res) => {
     try {
         await mongodb();
 
-        const { user, page = 1, limit = 10 } = req.body.data;
+        const { user, page = 1, limit = 10 } = req.query;
 
         if (!user) {
             return res.status(404).json({
