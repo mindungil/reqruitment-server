@@ -67,7 +67,7 @@
 ---
 
 ## 폴더 구조
-
+```
 📦src
  ┣ 📂config
  ┃ ┣ 📜mongodb.js
@@ -99,7 +99,7 @@
  ┣ 📂swagger
  ┃ ┗ 📜config.js
  ┣ 📜app.js
-
+```
 ---
 ## 설치 및 실행 가이드
 
