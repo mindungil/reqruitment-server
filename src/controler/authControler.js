@@ -1,4 +1,5 @@
 import User from '../models/userModel.js';
+import UserLog from '../models/userLogModel.js'
 import crypto from 'crypto'; // Base64 암호화를 위한 모듈
 import { storeRefreshToken, deleteRefreshToken, storeAccessToken, deleteAccessToken } from '../models/tokenModel.js';
 import { mongodb } from '../config/mongodb.js';
@@ -69,6 +70,16 @@ export const signin = async (req, res) => {
     // res.set('Authorization', `Bearer ${accessToken}`); // 헤더로 클라이언트에 엑세스 토큰 보내주기
     // res.set('X-Refresh-Token', `Bearer ${refreshToken}`); 
     // 바디로 수정
+
+    const nowDate = new Date();
+    const userLogData = {
+      이름: user.이름,
+      이메일: user.이메일,
+      시간: nowDate,
+    }
+
+    await UserLog.create(userLogData); // 로그인 정보 DB에 로그  기록
+    console.log(`로그인 로그 생성`);
 
     res.status(200).json({
       success: true,

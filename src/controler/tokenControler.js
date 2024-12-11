@@ -17,7 +17,7 @@ export const makeAccessToken = async (req, res) => {
 
     console.log(serverRefreshToken);
     console.log(userRefreshToken);
-    if(userRefreshToken == serverRefreshToken){
+    if(userRefreshToken == serverRefreshToken){ //redis에 저장된 token과 유저의 헤더 토큰 비교
         res.set('Authorization', `Bearer ${newAccessToken}`);
         storeAccessToken(req.body.email, newAccessToken);
         

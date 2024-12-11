@@ -11,13 +11,13 @@ export default function checkToken (req, res, next) {
             });
         };
 
-        const reqToken = reqTokenTemp.split(' ')[1];
+        const reqToken = reqTokenTemp.split(' ')[1]; //'Bearer '제외 시키는 함수
 
         if (!reqToken) {
             return res.status(403).json({ success: false, message: 'access token이 필요합니다.'});
         }
 
-        const decode = jwt.verify(reqToken, process.env.JWT_SECRET);
+        const decode = jwt.verify(reqToken, process.env.JWT_SECRET); // 토큰 검증 함수
         
         console.log("요쳥 토큰 유효 확인 : ");
         next();

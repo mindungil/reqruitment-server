@@ -16,7 +16,7 @@ const swaggerDefinition = {
       }
     },
     schemas: {
-      Application: {
+      Application: { // 주요 스키마 미리 구성
         type: "object",
         properties: {
           지원공고: {
