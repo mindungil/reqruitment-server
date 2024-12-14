@@ -26,6 +26,19 @@ const applicationRouter = express.Router();
  *                      schema:
  *                          $ref: '#/components/schemas/Application'
  *          403:
+ *              description: 지원공고 ID 오류
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              success:
+ *                                  type: boolean
+ *                                  example: false
+ *                              message:
+ *                                  type: string
+ *                                  example: 지원공고 ID가 일치하지 않습니다.
+ *          403:
  *              description: 지원자 정보 DB에 존재하지 않음
  *              content:
  *                  application/json:

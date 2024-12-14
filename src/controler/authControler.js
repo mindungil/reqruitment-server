@@ -60,8 +60,8 @@ export const signin = async (req, res) => {
       return res.status(400).json({ success: false, message: '비밀번호가 일치하지 않습니다.' });
     }
 
-    const refreshToken = generateRefreshToken(user);
-    const accessToken = generateAccessToken(refreshToken);
+    const refreshToken = await generateRefreshToken(user);
+    const accessToken = await generateAccessToken(refreshToken);
 
     // Refresh Token Redis에 저장
     await storeRefreshToken(email, refreshToken);

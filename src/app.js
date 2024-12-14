@@ -16,7 +16,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors({ exposedHeaders: ['Authorization', 'X-Refresh-Token'] }));
+app.use(cors()); // 기본적으로 모든 도메인, 모든 메서드 허용
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 

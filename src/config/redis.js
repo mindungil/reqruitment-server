@@ -1,7 +1,7 @@
 import {createClient} from 'redis'
 
 const client = createClient({
-  legacyMode: true
+  legacyMode: true,
 });
 
 client.on('connect', () => {
