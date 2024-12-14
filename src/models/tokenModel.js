@@ -57,13 +57,13 @@ export const storeAccessToken = async (userEmail, accessToken) => {
   }
 };
 
-export const getAccessToken = async (userEmail, accessToken) => {
+export const getAccessToken = async (userEmail) => {
   try {
     const token = await redisCli.get(`accessToken:${userEmail}`);
     if(!token) throw new Error('Token not found');
     return token;
-  } catch(err) {
-    console.error('Error fetching acess token:', err.message);
+  } catch(error) {
+    console.error('Error fetching acess token:', error.message);
     throw error('Failed to fetch access token');
   }
 };

@@ -1,5 +1,6 @@
 import Application from '../models/applicationModel.js'
 import User from '../models/userModel.js';
+import JobData from '../modes/jobOpenings.js'
 import { mongodb } from '../config/mongodb.js';
 import redisCli from '../config/redis.js';
 import mongoose from 'mongoose';
@@ -46,8 +47,16 @@ export const applyJob = async (req, res) => {
         if(!userData) {
             return res.status(403).json({
                 success: false,
-                message: '지원자 정보가 DB에 존재하지 않음'
+                message: '지원자 정보가 DB에 존재하지 않습니다.'
             });
+        }
+
+        const checkJobData = await JobData.findById(applyData.지원공고);
+        if(!checkJobData)  {
+            return res.status(402).json({
+                sucess: false,
+                message: '지원공고 ID가 일치하지 않습니다.'
+            })
         }
 
         const checkApplyData = await Application.findOne({지원자: applyData.지원자, 이메일: userEmail, 지원공고: applyData.지원공고});
@@ -73,7 +82,7 @@ export const applyJob = async (req, res) => {
             success: true,
             message: '공고 지원 완료',
             data: {
-                applyData: applyData
+                applyData: insertApplyData
             }
         });
     } catch(err) {
