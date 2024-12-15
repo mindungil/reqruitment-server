@@ -25,7 +25,7 @@ const applicationRouter = express.Router();
  *                  application/json:
  *                      schema:
  *                          $ref: '#/components/schemas/Application'
- *          403:
+ *          402:
  *              description: 지원공고 ID 오류
  *              content:
  *                  application/json:
