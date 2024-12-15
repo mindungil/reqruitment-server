@@ -2,6 +2,8 @@ import csv
 import os
 import pandas as pd
 
+# 데이터를 정제하는 코드입니다.
+
 # 입력 파일과 출력 파일 경로 설정
 input_file = os.path.join(os.getcwd(), "crawler", "crawlingData", "saraminCrawling.csv")  # 입력 파일 이름
 output_file = os.path.join(os.getcwd(), "crawler", "crawlingData", "jobData.csv")

@@ -1,6 +1,6 @@
 import Application from '../models/applicationModel.js'
 import User from '../models/userModel.js';
-import JobData from '../modes/jobOpenings.js'
+import JobData from '../models/jobOpenings.js'
 import { mongodb } from '../config/mongodb.js';
 import redisCli from '../config/redis.js';
 import mongoose from 'mongoose';
